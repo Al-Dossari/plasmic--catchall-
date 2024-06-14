@@ -485,20 +485,6 @@
       "cssFilePath": "plasmic/website_starter/plasmic.module.css",
       "components": [
         {
-          "id": "HrciYgUtbHhR",
-          "name": "NewPage",
-          "type": "managed",
-          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
-          "renderModuleFilePath": "plasmic/website_starter/PlasmicNewPage.tsx",
-          "importSpec": {
-            "modulePath": "../pages/new-page.tsx"
-          },
-          "cssFilePath": "plasmic/website_starter/PlasmicNewPage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/new-page"
-        },
-        {
           "id": "8bhhag1tqQgp",
           "name": "Button",
           "type": "managed",
@@ -526,6 +512,33 @@
           "componentType": "component"
         },
         {
+          "id": "TO_adoaTCD1F",
+          "name": "TextInput",
+          "type": "managed",
+          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
+          "renderModuleFilePath": "plasmic/website_starter/PlasmicTextInput.tsx",
+          "importSpec": {
+            "modulePath": "TextInput.tsx"
+          },
+          "cssFilePath": "plasmic/website_starter/PlasmicTextInput.module.css",
+          "scheme": "blackbox",
+          "componentType": "component",
+          "plumeType": "text-input"
+        },
+        {
+          "id": "4mKFCcmGRPek",
+          "name": "Statistic",
+          "type": "managed",
+          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
+          "renderModuleFilePath": "plasmic/website_starter/PlasmicStatistic.tsx",
+          "importSpec": {
+            "modulePath": "Statistic.tsx"
+          },
+          "cssFilePath": "plasmic/website_starter/PlasmicStatistic.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
           "id": "DXA8nOEtSmCz",
           "name": "Homepage",
           "type": "managed",
@@ -538,6 +551,34 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/mypage"
+        },
+        {
+          "id": "HrciYgUtbHhR",
+          "name": "NewPage",
+          "type": "managed",
+          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
+          "renderModuleFilePath": "plasmic/website_starter/PlasmicNewPage.tsx",
+          "importSpec": {
+            "modulePath": "../pages/new-page.tsx"
+          },
+          "cssFilePath": "plasmic/website_starter/PlasmicNewPage.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/new-page"
+        },
+        {
+          "id": "R0ex5hWuJUA7",
+          "name": "Homepage2",
+          "type": "managed",
+          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
+          "renderModuleFilePath": "plasmic/website_starter/PlasmicHomepage2.tsx",
+          "importSpec": {
+            "modulePath": "../pages/app2.tsx"
+          },
+          "cssFilePath": "plasmic/website_starter/PlasmicHomepage2.module.css",
+          "scheme": "blackbox",
+          "componentType": "page",
+          "path": "/app2"
         },
         {
           "id": "bvVRBjdUSn5s",
@@ -568,20 +609,6 @@
           "path": "/date-fetcher"
         },
         {
-          "id": "R0ex5hWuJUA7",
-          "name": "Homepage2",
-          "type": "managed",
-          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
-          "renderModuleFilePath": "plasmic/website_starter/PlasmicHomepage2.tsx",
-          "importSpec": {
-            "modulePath": "../pages/app2.tsx"
-          },
-          "cssFilePath": "plasmic/website_starter/PlasmicHomepage2.module.css",
-          "scheme": "blackbox",
-          "componentType": "page",
-          "path": "/app2"
-        },
-        {
           "id": "0Dc0FcEA3quc",
           "name": "Homepage4",
           "type": "managed",
@@ -596,20 +623,6 @@
           "path": "/page3"
         },
         {
-          "id": "TO_adoaTCD1F",
-          "name": "TextInput",
-          "type": "managed",
-          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
-          "renderModuleFilePath": "plasmic/website_starter/PlasmicTextInput.tsx",
-          "importSpec": {
-            "modulePath": "TextInput.tsx"
-          },
-          "cssFilePath": "plasmic/website_starter/PlasmicTextInput.module.css",
-          "scheme": "blackbox",
-          "componentType": "component",
-          "plumeType": "text-input"
-        },
-        {
           "id": "Lpt47mHIbZMR",
           "name": "Mypage",
           "type": "managed",
@@ -622,19 +635,6 @@
           "scheme": "blackbox",
           "componentType": "page",
           "path": "/"
-        },
-        {
-          "id": "4mKFCcmGRPek",
-          "name": "Statistic",
-          "type": "managed",
-          "projectId": "k6Ff1vjjTACuiW5BomdEV7",
-          "renderModuleFilePath": "plasmic/website_starter/PlasmicStatistic.tsx",
-          "importSpec": {
-            "modulePath": "Statistic.tsx"
-          },
-          "cssFilePath": "plasmic/website_starter/PlasmicStatistic.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
         }
       ],
       "icons": [
