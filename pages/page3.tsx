@@ -4,23 +4,23 @@ import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 import GlobalContextsProvider from "../components/plasmic/website_starter/PlasmicGlobalContextsProvider";
 
-import { PlasmicMypage } from "../components/plasmic/website_starter/PlasmicMypage";
+import { PlasmicHomepage4 } from "../components/plasmic/website_starter/PlasmicHomepage4";
 import { useRouter } from "next/router";
 
-function Mypage() {
-  // Use PlasmicMypage to render this component as it was
+function Homepage4() {
+  // Use PlasmicHomepage4 to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
   // can also install whatever React hooks you need here to manage state or
   // fetch data.
   //
-  // Props you can pass into PlasmicMypage are:
+  // Props you can pass into PlasmicHomepage4 are:
   // 1. Variants you want to activate,
   // 2. Contents for slots you want to fill,
   // 3. Overrides for any named node in the component to attach behavior and data,
   // 4. Props to set on the root node.
   //
-  // By default, PlasmicMypage is wrapped by your project's global
+  // By default, PlasmicHomepage4 is wrapped by your project's global
   // variant context providers. These wrappers may be moved to
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
@@ -31,10 +31,10 @@ function Mypage() {
         params={useRouter()?.query}
         query={useRouter()?.query}
       >
-        <PlasmicMypage />
+        <PlasmicHomepage4 />
       </PageParamsProvider__>
     </GlobalContextsProvider>
   );
 }
 
-export default Mypage;
+export default Homepage4;
