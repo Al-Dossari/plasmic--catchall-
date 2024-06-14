@@ -1,126 +1,136 @@
-import * as React from 'react';
 import {
-    PlasmicComponent,
-    ComponentRenderData,
-    PlasmicRootProvider,
-    extractPlasmicQueryData
-} from '@plasmicapp/loader-nextjs';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import Error from 'next/error';
-import { useRouter } from 'next/router';
-import { PLASMIC } from '../plasmic-init';
+  ComponentRenderData,
+  extractPlasmicQueryData,
+  PlasmicComponent,
+  PlasmicRootProvider,
+} from "@plasmicapp/loader-nextjs";
+import type { GetStaticPaths, GetStaticProps } from "next";
 
-/**
- * Use fetchPages() to fetch list of pages that have been created in Plasmic
- */
-export const getStaticPaths: GetStaticPaths = async () => {
-    const pages = await PLASMIC.fetchPages();
-    return {
-        paths: pages.map((page) => ({
-            params: { catchall: page.path.substring(1).split('/') }
-        })),
-        fallback: 'blocking'
-    };
-};
+import { PLASMIC } from "@/plasmic-init";
+import {
+  generateAllPaths,
+  getActiveVariation,
+  rewriteWithoutTraits,
+} from "@plasmicapp/loader-nextjs/edge";
+import Error from "next/error";
+import { useRouter } from "next/router";
+import Script from "next/script";
 
-/**
- * For each page, pre-fetch the data we need to render it
- */
-export const getStaticProps: GetStaticProps = async (context) => {
-    const { catchall } = context.params ?? {};
+// This is the google analytics id that you get on your dashboard
+const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
 
-    // Convert the catchall param into a path string
-    const plasmicPath =
-        typeof catchall === 'string' ? catchall : Array.isArray(catchall) ? `/${catchall.join('/')}` : '/';
-    const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-    if (!plasmicData) {
-        // This is some non-Plasmic catch-all page
-        return {
-            props: {}
-        };
-    }
+export default function PlasmicLoaderPage(props: {
+  plasmicData?: ComponentRenderData;
+  queryCache?: Record<string, any>;
+  variation?: Record<string, string>;
+  externalIds?: Record<string, string>;
+}) {
+  const { plasmicData, queryCache, variation, externalIds } = props;
+  const router = useRouter();
+  if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
+    return <Error statusCode={404} />;
+  }
+  const pageMeta = plasmicData.entryCompMetas[0];
+  // Use the external IDs to perform tracking
+  return (
+    <>
+      {/* Adds gtag, this can be installed globally, GA_MEASUREMENT_ID is the google analytics id that you get on your dashboard */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="afterInteractive"
+      />
+      {/* Now we only have to append the externalIds as properties to any event that we send to google analytics */}
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-    // This is a path that Plasmic knows about.
-    const pageMeta = plasmicData.entryCompMetas[0];
+          gtag('config', '${GA_MEASUREMENT_ID}', { 'send_page_view': false });
+          gtag('event', 'pageview', ${JSON.stringify(externalIds)});
 
-    // Cache the necessary data fetched for the page.
-    const queryCache = await extractPlasmicQueryData(
-        <PlasmicRootProvider
-            loader={PLASMIC}
-            prefetchedData={plasmicData}
-            pageRoute={pageMeta.path}
-            pageParams={pageMeta.params}
-        >
-            <PlasmicComponent component={pageMeta.displayName} />
-        </PlasmicRootProvider>
-    );
-
-    // Pass the data in as props.
-    return {
-        props: { plasmicData, queryCache },
-
-        // Using incremental static regeneration, will invalidate this page
-        // after 300s (no deploy webhooks needed)
-        revalidate: 10
-    };
-};
-
-/**
- * Actually render the page!
- */
-export default function CatchallPage(props: { plasmicData?: ComponentRenderData; queryCache?: Record<string, any> }) {
-    const { plasmicData, queryCache } = props;
-    const router = useRouter();
-    if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
-        return <Error statusCode={404} />;
-    }
-    const pageMeta = plasmicData.entryCompMetas[0];
-    return (
-        // Pass in the data fetched in getStaticProps as prefetchedData
-        <PlasmicRootProvider
-            loader={PLASMIC}
-            prefetchedData={plasmicData}
-            prefetchedQueryData={queryCache}
-            pageRoute={pageMeta.path}
-            pageParams={pageMeta.params}
-            pageQuery={router.query}
-        >
-            {
-                // pageMeta.displayName contains the name of the component you fetched.
-            }
-            <PlasmicComponent component={pageMeta.displayName} />
-        </PlasmicRootProvider>
-    );
+      `}
+      </Script>
+      <PlasmicRootProvider
+        loader={PLASMIC}
+        prefetchedData={plasmicData}
+        prefetchedQueryData={queryCache}
+        pageParams={pageMeta.params}
+        pageQuery={router.query}
+        variation={variation}
+      >
+        <PlasmicComponent component={pageMeta.displayName} />
+      </PlasmicRootProvider>
+    </>
+  );
 }
-//
-// function Mypage() {
-//     // Use PlasmicMypage to render this component as it was
-//     // designed in Plasmic, by activating the appropriate variants,
-//     // attaching the appropriate event handlers, etc.  You
-//     // can also install whatever React hooks you need here to manage state or
-//     // fetch data.
-//     //
-//     // Props you can pass into PlasmicMypage are:
-//     // 1. Variants you want to activate,
-//     // 2. Contents for slots you want to fill,
-//     // 3. Overrides for any named node in the component to attach behavior and data,
-//     // 4. Props to set on the root node.
-//     //
-//     // By default, PlasmicMypage is wrapped by your project's global
-//     // variant context providers. These wrappers may be moved to
-//     // Next.js Custom App component
-//     // (https://nextjs.org/docs/advanced-features/custom-app).
-//     return (
-//         <GlobalContextsProvider>
-//             <PageParamsProvider__
-//                 route={useRouter()?.pathname}
-//                 params={useRouter()?.query}
-//                 query={useRouter()?.query}
-//             >
-//                 <PlasmicMypage />
-//             </PageParamsProvider__>
-//         </GlobalContextsProvider>
-//     );
-// }
 
-// export default Mypage;
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { catchall } = context.params ?? {};
+  const rawPlasmicPath =
+    typeof catchall === "string"
+      ? catchall
+      : Array.isArray(catchall)
+      ? `/${catchall.join("/")}`
+      : "/";
+
+  // Parse the path and extract the traits
+  const { path: plasmicPath, traits } = rewriteWithoutTraits(rawPlasmicPath);
+
+  const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
+  if (!plasmicData) {
+    // non-Plasmic catch-all
+    return { props: {} };
+  }
+
+  // Get the active variation for this page
+  const variation = getActiveVariation({
+    splits: PLASMIC.getActiveSplits(),
+    traits,
+    path: plasmicPath,
+  });
+
+  const pageMeta = plasmicData.entryCompMetas[0];
+  // Cache the necessary data fetched for the page
+  const queryCache = await extractPlasmicQueryData(
+    <PlasmicRootProvider
+      loader={PLASMIC}
+      prefetchedData={plasmicData}
+      pageParams={pageMeta.params}
+      variation={variation}
+    >
+      <PlasmicComponent component={pageMeta.displayName} />
+    </PlasmicRootProvider>
+  );
+  // Retrieve the external IDs for this variation
+  const externalIds = PLASMIC.getExternalVariation(variation, {
+    // Filter the external IDs to only include the ones for the projects used in this page
+    projectIds: plasmicData.entryCompMetas.map((m) => m.projectId),
+  });
+  // Use revalidate if you want incremental static regeneration
+  return {
+    props: { plasmicData, queryCache, variation, externalIds },
+    revalidate: 60,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const pageModules = await PLASMIC.fetchPages();
+  function* gen() {
+    for (const page of pageModules) {
+      // Generate all possible paths for this page including all variations
+      const allPaths = generateAllPaths(page.path);
+      for (const path of allPaths) {
+        yield {
+          params: {
+            catchall: path.substring(1).split("/"),
+          },
+        };
+      }
+    }
+  }
+  return {
+    paths: Array.from(gen()),
+    fallback: "blocking",
+  };
+};
